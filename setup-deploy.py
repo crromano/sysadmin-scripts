@@ -19,8 +19,8 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     PROJECT_NAME = nombre_proyecto
     PROJECT_FOLDER = carpeta_proyecto
     SERVER_NAME = nombre_dns
-    ERROR_LOG = PROJECT_NAME+"_error.log combined"
-    ACCESS_LOG = PROJECT_NAME+"_access.log"
+    ERROR_LOG = PROJECT_NAME+"_error.log"
+    ACCESS_LOG = PROJECT_NAME+"_access.log combined"
     FILES_MATCH='<FilesMatch "\.(cgi|shtml|phtml|php)$">'
     
     d={ 'PROJECT_NAME': PROJECT_NAME, 'PROJECT_FOLDER': PROJECT_FOLDER, 'SERVER_NAME': SERVER_NAME, 'ERROR_LOG': ERROR_LOG, 'ACCESS_LOG': ACCESS_LOG, 'FILES_MATCH': FILES_MATCH }
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     NOMBRE_PROYECTO=sys.argv[3]
     CARPETA_PROYECTO=sys.argv[4]
     GIT_URL=sys.argv[5]
-    if len(sys.argv) < 5:
+    if len(sys.argv) > 5:
         DB_NAME=sys.argv[6]
         DB_PASSWORD=sys.argv[7]
 
@@ -46,15 +46,16 @@ if __name__ == '__main__':
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
         os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
+        print("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
         os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
     else:
         os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
-    os.system("source /var/www/" + CARPETA_PROYECTO + "/bin/activate") 
-    os.system("pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt ")
-    if DB_NAME:
-        os.system("mysql -uroot -p"+DB_PASSWORD + " -e CREATE DATABASE " + DB_NAME + ";")
-        os.system("sudo a2ensite" + SITE_APACHE)
-
+    os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
+    os.system(". /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
+    if len(sys.argv) > 5:
+        os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
+        os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
+    os.system("sudo a2ensite " + SITE_APACHE)
     os.system("sudo service apache2 restart")
 
 # EJEMPLO DE USO: python3 setup-deploy.py hole.wolfcrass.com hole mysite hola http://crromano:F_50613dkm@github.com/crromano/sysadminscripts/ 
