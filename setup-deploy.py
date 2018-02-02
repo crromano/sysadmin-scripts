@@ -38,11 +38,10 @@ if __name__ == '__main__':
     NOMBRE_PROYECTO=sys.argv[3]
     CARPETA_PROYECTO=sys.argv[4]
     GIT_URL=sys.argv[5]
-    if sys.argv[6]:
+    if len(sys.argv) < 5:
         DB_NAME=sys.argv[6]
-    if sys.argv[7]:
-        DB_PASSWORD=sys.argv[7]    
-    
+        DB_PASSWORD=sys.argv[7]
+
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
