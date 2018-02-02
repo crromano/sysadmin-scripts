@@ -50,13 +50,12 @@ if __name__ == '__main__':
         os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
     else:
         os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
-
     os.system("source /var/www/" + CARPETA_PROYECTO + "/bin/activate") 
     os.system("pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt ")
-    if DB_NAME && DB_PASSWORD:
+    if DB_NAME:
         os.system("mysql -uroot -p"+DB_PASSWORD + " -e CREATE DATABASE " + DB_NAME + ";")
-	os.system("sudo a2ensite" + SITE_APACHE)
-    os.system("sudo service apache2 restart")
+        os.system("sudo a2ensite" + SITE_APACHE)
 
+    os.system("sudo service apache2 restart")
 
 # EJEMPLO DE USO: python3 setup-deploy.py hole.wolfcrass.com hole mysite hola http://crromano:F_50613dkm@github.com/crromano/sysadminscripts/ 
