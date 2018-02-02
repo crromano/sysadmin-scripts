@@ -52,4 +52,5 @@ if __name__ == '__main__':
 
     os.system("source /var/www/" + CARPETA_PROYECTO + "/bin/activate") 
     os.system("pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt ")
-    os.system("mysql -uroot -p"+DB_PASSWORD + " -e CREATE DATABASE " + DB_NAME + ";")
+    if DB_NAME && DB_PASSWORD:
+        os.system("mysql -uroot -p"+DB_PASSWORD + " -e CREATE DATABASE " + DB_NAME + ";")
