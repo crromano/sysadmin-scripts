@@ -55,3 +55,8 @@ if __name__ == '__main__':
     os.system("pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt ")
     if DB_NAME && DB_PASSWORD:
         os.system("mysql -uroot -p"+DB_PASSWORD + " -e CREATE DATABASE " + DB_NAME + ";")
+	os.system("sudo a2ensite" + SITE_APACHE)
+    os.system("sudo service apache2 restart")
+
+
+# EJEMPLO DE USO: python3 setup-deploy.py hole.wolfcrass.com hole mysite hola http://crromano:F_50613dkm@github.com/crromano/sysadminscripts/ 
