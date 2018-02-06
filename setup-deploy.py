@@ -3,6 +3,7 @@ from string import Template
 import sys
 import io
 import os
+import subprocess
 
 def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     # FICHERO APACHE2 SITE
@@ -44,12 +45,11 @@ if __name__ == '__main__':
 
     os.system('sudo rm -r /var/www/' + CARPETA_PROYECTO)
     os.system("sudo git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-    os.system('/bin/bash --rcfile activate-venv.sh' + CARPETA_PROYECTO)
+    subprocess.call(['sudo sh activate-venv.sh ' + CARPETA_PROYECTO])
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
-    os.system("source /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
     if len(sys.argv) > 5:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
