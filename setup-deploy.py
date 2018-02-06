@@ -42,16 +42,14 @@ if __name__ == '__main__':
         DB_NAME=sys.argv[6]
         DB_PASSWORD=sys.argv[7]
 
+    os.system('sudo rm -r /var/www/' + CARPETA_PROYECTO)
+    os.system("sudo git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
+    os.system('/bin/bash --rcfile activate-venv.sh' + CARPETA_PROYECTO)
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
-        os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        print("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
-    else:
-        os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
-    os.system(". /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
+    os.system("source /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
     if len(sys.argv) > 5:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
