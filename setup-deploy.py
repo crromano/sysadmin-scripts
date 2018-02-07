@@ -3,7 +3,9 @@ from string import Template
 import sys
 import io
 import os
-import subprocess
+import pip
+import virtualenv
+import runpy
 
 def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     # FICHERO APACHE2 SITE
@@ -39,21 +41,25 @@ if __name__ == '__main__':
     NOMBRE_PROYECTO=sys.argv[3]
     CARPETA_PROYECTO=sys.argv[4]
     GIT_URL=sys.argv[5]
-    if len(sys.argv) > 5:
+    if len(sys.argv) > 6:
         DB_NAME=sys.argv[6]
         DB_PASSWORD=sys.argv[7]
-
-    os.system('sudo rm -r /var/www/' + CARPETA_PROYECTO)
+    
+    if (os.path.isdir("/var/www/" + CARPETA_PROYECTO)):
+        os.system('sudo rm -r /var/www/' + CARPETA_PROYECTO)
     os.system("sudo git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-    subprocess.call(['sudo sh activate-venv.sh ' + CARPETA_PROYECTO])
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
-    if len(sys.argv) > 5:
+    virtualenv.create_environment("/var/www/" + CARPETA_PROYECTO + "/.")
+    runpy.run_path('/var/www/' + CARPETA_PROYECTO + '/bin/activate_this.py') 
+    os.system('pip3 install -r /var/www/' + CARPETA_PROYECTO + '/requirements.txt')
+    if len(sys.argv) > 6:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
     os.system("sudo a2ensite " + SITE_APACHE)
     os.system("sudo service apache2 restart")
 
 # EJEMPLO DE USO: python3 setup-deploy.py hole.wolfcrass.com hole mysite hola http://crromano:F_50613dkm@github.com/crromano/sysadminscripts/ 
+
