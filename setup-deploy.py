@@ -61,5 +61,4 @@ if __name__ == '__main__':
     os.system("sudo a2ensite " + SITE_APACHE)
     os.system("sudo service apache2 restart")
 
-# EJEMPLO DE USO: python3 setup-deploy.py hole.wolfcrass.com hole mysite hola http://crromano:F_50613dkm@github.com/crromano/sysadminscripts/ 
-
+# EJEMPLO DE USO: sudo python3 setup-deploy.py [DOMINIO] [ARCHIVO_CONFIGURACION_APACHE] [NOMBRE_PROYECTO] [CARPETA_PROYECTO] http://[USUARIO:CONTRASEÑA]@github.com/[USUARIO]/[REPOSITORIO] [NOMBRE_DB] [CONTRASEÑA DB]
