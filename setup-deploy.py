@@ -38,6 +38,7 @@ if __name__ == '__main__':
     NOMBRE_PROYECTO=sys.argv[3]
     CARPETA_PROYECTO=sys.argv[4]
     GIT_URL=sys.argv[5]
+    print(len(sys.argv))
     if len(sys.argv) > 5:
         DB_NAME=sys.argv[6]
         DB_PASSWORD=sys.argv[7]
@@ -46,7 +47,6 @@ if __name__ == '__main__':
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
         os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        print("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
         os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
     else:
         os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
