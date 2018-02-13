@@ -1,9 +1,9 @@
 {
-        "DNS": "crm.dansaltech.com",
-        "SITE_APACHE": "crm_dansaltech.conf",
-        "NOMBRE_PROYECTO": "crm_project",
-        "CARPETA_PROYECTO": "crm_folder",
-        "GIT_URL": "https://crromano:F_50613dkm@github.com/wolfcrass/comparador_dansaltech_remake.git",
-        "DB_NAME": "root",
-        "DB_PASSWORD": "toor"
+        "DNS": "ldc.wolfcrass.com",
+        "SITE_APACHE": "localizador.conf",
+        "NOMBRE_PROYECTO": "ldc",
+        "CARPETA_PROYECTO": "localizadordeclientes",
+        "GIT_URL": "https://crromano:F_50613dkm@github.com/crromano/localizadordeclientes/",
+        "DB_NAME": 0,
+        "DB_PASSWORD": 0
 }

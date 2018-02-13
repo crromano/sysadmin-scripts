@@ -1,4 +1,4 @@
-#!/usr/env/python3
+#!/usr/bin/python3
 from string import Template
 import sys
 import io
@@ -11,7 +11,7 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     CONFIG_APACHE_SITE = open(APACHE_SITE, 'w')
     
     # DECLARO EL FICHERO TEMPLATE
-    filein = open( 'template-site.conf' )
+    filein = open( '/home/ubuntu/sysadmin-scripts/template-site.conf' )
     
     # LEO EL FICHERO TEMPLATE
     src = Template( filein.read() )
@@ -31,10 +31,10 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     CONFIG_APACHE_SITE.close()
 
 
-
 #COMPRUEBO SI EL SITIO YA EXISTE O NO
 if __name__ == '__main__':
-    with open('params.json') as file:
+    os.system('hostname')
+    with open('/home/ubuntu/sysadmin-scripts/params.json') as file:
         data=json.load(file)
     
     DNS=data.get('DNS')
@@ -48,26 +48,16 @@ if __name__ == '__main__':
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
-        os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        print("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
-    else:
-        os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
+
+    os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
+    print("- Sitio clonado")
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
+    print("- Permisos concedidos")
+    os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
+    print("- Venv creado ")
     os.system(". /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
+    print("- Requisitos instalados")
     if DB_NAME != 0:
-        os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
-        os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
-    os.system("sudo a2ensite " + SITE_APACHE)
-    os.system("sudo service apache2 restart")
-    if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
-        deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
-        os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
-    os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
-    virtualenv.create_environment("/var/www/" + CARPETA_PROYECTO + "/.")
-    runpy.run_path('/var/www/' + CARPETA_PROYECTO + '/bin/activate_this.py') 
-    os.system('pip3 install -r /var/www/' + CARPETA_PROYECTO + '/requirements.txt')
-    if len(sys.argv) > 6:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
     os.system("sudo a2ensite " + SITE_APACHE)
