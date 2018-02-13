@@ -3,6 +3,7 @@ from string import Template
 import sys
 import io
 import os
+import json
 
 def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     # FICHERO APACHE2 SITE
@@ -33,14 +34,16 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
 
 #COMPRUEBO SI EL SITIO YA EXISTE O NO
 if __name__ == '__main__':
-    DNS=sys.argv[1]
-    SITE_APACHE=sys.argv[2]
-    NOMBRE_PROYECTO=sys.argv[3]
-    CARPETA_PROYECTO=sys.argv[4]
-    GIT_URL=sys.argv[5]
-    if len(sys.argv) > 5:
-        DB_NAME=sys.argv[6]
-        DB_PASSWORD=sys.argv[7]
+    with open('params.json') as file:
+        data=json.load(file)
+    
+    DNS=data.get('DNS')
+    SITE_APACHE=data.get('SITE_APACHE')
+    NOMBRE_PROYECTO=data.get('NOMBRE_PROYECTO')
+    CARPETA_PROYECTO=data.get('CARPETA_PROYECTO')
+    GIT_URL=data.get('GIT_URL')
+    DB_NAME=data.get('DB_NAME')
+    DB_PASSWORD=data.get('DB_PASSWORD')
 
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
@@ -52,7 +55,7 @@ if __name__ == '__main__':
         os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
     os.system(". /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
-    if len(sys.argv) > 5:
+    if DB_NAME != 0:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
     os.system("sudo a2ensite " + SITE_APACHE)
