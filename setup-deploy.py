@@ -36,7 +36,6 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
 
 #COMPRUEBO SI EL SITIO YA EXISTE O NO
 if __name__ == '__main__':
-    os.system('hostname')
     with open('/home/ubuntu/sysadmin-scripts/params.json') as file:
         data=json.load(file)
     
