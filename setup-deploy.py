@@ -11,7 +11,7 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     CONFIG_APACHE_SITE = open(APACHE_SITE, 'w')
     
     # DECLARO EL FICHERO TEMPLATE
-    filein = open( 'template-site.conf' )
+    filein = open( '/home/ubuntu/sysadmin-scripts/template-site.conf' )
     
     # LEO EL FICHERO TEMPLATE
     src = Template( filein.read() )
@@ -34,7 +34,7 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
 
 #COMPRUEBO SI EL SITIO YA EXISTE O NO
 if __name__ == '__main__':
-    with open('params.json') as file:
+    with open('/home/ubuntu/sysadmin-scripts/params.json') as file:
         data=json.load(file)
     
     DNS=data.get('DNS')
