@@ -4,6 +4,9 @@ import sys
 import io
 import os
 import json
+import pip
+import virtualenv
+import runpy
 
 def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     # FICHERO APACHE2 SITE
@@ -31,7 +34,6 @@ def deploy_site(nombre_dns, archivo_sitio, nombre_proyecto, carpeta_proyecto):
     CONFIG_APACHE_SITE.close()
 
 
-
 #COMPRUEBO SI EL SITIO YA EXISTE O NO
 if __name__ == '__main__':
     with open('/home/ubuntu/sysadmin-scripts/params.json') as file:
@@ -48,26 +50,13 @@ if __name__ == '__main__':
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
-        os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        print("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
-        os.system("virtualenv /var/www/" + CARPETA_PROYECTO)
-    else:
-        os.system("git --git-dir=/var/www/" + CARPETA_PROYECTO + "/.git --work-tree=/var/www/" + CARPETA_PROYECTO + "/.git pull") 
-    os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
-    os.system(". /var/www/" + CARPETA_PROYECTO + "/bin/activate && pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt && deactivate")
-    if DB_NAME != 0:
-        os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
-        os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
-    os.system("sudo a2ensite " + SITE_APACHE)
-    os.system("sudo service apache2 restart")
-    if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
-        deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
-        os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
+
+    os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
     virtualenv.create_environment("/var/www/" + CARPETA_PROYECTO + "/.")
-    runpy.run_path('/var/www/' + CARPETA_PROYECTO + '/bin/activate_this.py') 
-    os.system('pip3 install -r /var/www/' + CARPETA_PROYECTO + '/requirements.txt')
-    if len(sys.argv) > 6:
+    runpy.run_path('/var/www/' + CARPETA_PROYECTO + '/bin/activate_this.py')
+    os.system("pip3 install -r /var/www/" + CARPETA_PROYECTO + "/requirements.txt")
+    if DB_NAME != 0:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
     os.system("sudo a2ensite " + SITE_APACHE)
