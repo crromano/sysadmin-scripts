@@ -1,10 +1,10 @@
 
 {
-    "DNS": "comparador.wolfcrass.com",
-    "SITE_APACHE": "comparador.conf",
-    "NOMBRE_PROYECTO": "comparador_project",
-    "CARPETA_PROYECTO": "comparador_dansaltech_remake",
-    "GIT_URL": "https://crromano:F_50613dkm@github.com/wolfcrass/comparador_dansaltech_remake/",
+    "DNS": "elegasenergia.com",
+    "SITE_APACHE": "elegasenergia.conf",
+    "NOMBRE_PROYECTO": "elegasweb",
+    "CARPETA_PROYECTO": "elegas_web",
+    "GIT_URL": "https://crromano:F_50613dkm@github.com/wolfcrass/elegas_web/",
     "DB_NAME": 0,
     "DB_PASSWORD": 0
 }

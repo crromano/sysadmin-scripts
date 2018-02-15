@@ -51,6 +51,7 @@ if __name__ == '__main__':
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
 
+    os.system("rm -r /var/www/"+CARPETA_PROYECTO)
     os.system("git clone " + GIT_URL + " /var/www/" + CARPETA_PROYECTO)
     os.system("sudo chmod -R 777 /var/www/" + CARPETA_PROYECTO)
     virtualenv.create_environment("/var/www/" + CARPETA_PROYECTO + "/.")
