@@ -56,11 +56,12 @@ if __name__ == '__main__':
     NOMBRE_PROYECTO=data.get('NOMBRE_PROYECTO')
     DB_NAME=data.get('DB_NAME')
     DB_PASSWORD=data.get('DB_PASSWORD')
-
+    P_NAME = NOMBRE_PROYECTO[:NOMBRE_PROYECTO.find("_")+1] + "project"
+    os.system("cp -R /var/www/" + CARPETA_PROYECTO + "/lib/python3.5/site-packages/django/contrib/admin/static/admin/ /var/www/" + CARPETA_PROYECTO + "/" + P_NAME + "/static/")
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
-
+     
     if DB_NAME != 0:
         os.system('mysql -uroot  -e "CREATE DATABASE ' + DB_NAME + '"' + ' -p"'+DB_PASSWORD+'";')
         os.system("mysql -uroot -p"+DB_PASSWORD + " " + DB_NAME + " < /var/www/" + CARPETA_PROYECTO + "/scripts/initial_inserts.sql")	
