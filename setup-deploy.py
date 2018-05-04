@@ -57,7 +57,8 @@ if __name__ == '__main__':
     DB_NAME=data.get('DB_NAME')
     DB_PASSWORD=data.get('DB_PASSWORD')
     P_NAME = NOMBRE_PROYECTO[:NOMBRE_PROYECTO.find("_")+1] + "project"
-    os.system("cp -R /var/www/" + CARPETA_PROYECTO + "/lib/python3.5/site-packages/django/contrib/admin/static/admin/ /var/www/" + CARPETA_PROYECTO + "/" + P_NAME + "/static/")
+    PYTHON_V = "python{0}.{1}".format(sys.version_info.major, sys.version_info.minor)
+    os.system("cp -R /var/www/" + CARPETA_PROYECTO + "/lib/" + PYTHON_V + "/site-packages/django/contrib/admin/static/admin/ /var/www/" + CARPETA_PROYECTO + "/" + P_NAME + "/static/")
     if not os.path.isfile("/etc/apache2/sites-available/"+SITE_APACHE):
         deploy_site(DNS, SITE_APACHE, NOMBRE_PROYECTO, CARPETA_PROYECTO)
         os.system("sudo mv " + SITE_APACHE + " /etc/apache2/sites-available/")
